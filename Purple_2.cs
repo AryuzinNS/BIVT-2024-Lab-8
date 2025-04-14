@@ -112,8 +112,8 @@ namespace Lab_8
 
            public override string ToString()
            {
-               if(_output == null) { 
-                return null; 
+               if(_output == null || _output.Length == 0) {
+                return "";
                }
     		   return String.Join(Environment.NewLine, _output);
            }
