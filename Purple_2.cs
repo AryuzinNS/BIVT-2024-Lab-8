@@ -115,7 +115,7 @@ namespace Lab_8
                if(_output == null) { 
                 return null; 
                }
-    		   return String.Join('\n', _output);
+    		   return String.Join(Environment.NewLine, _output);
            }
 
        }
