@@ -9,108 +9,99 @@ using System.Xml.Serialization;
 
 namespace Lab_8
 {
-    public class Purple_2: Purple
-    {
-    	private string[] _output;
-        public string[] Output => _output;
+	public class Purple_2: Purple
+	{
+		private string[] _output;
+		public string[] Output => _output;
 
-    	public Purple_2(string input): base(input){}
+		public Purple_2(string input): base(input){}
 
-    	public override void Review()
-    	{
-    		if(Input  == null)
-    		{
-    			return;
-    		}
+        private int[] GetSpaces(int amount_of_words, int symbols)
+        {
+            if (amount_of_words == 1 || amount_of_words == 0)
+            {
+                return new int[0];
+            }
+            int spaces = 50 - symbols;
+            int[] arr = new int[amount_of_words - 1];
+            int cnt = 0, i = 0;
+            while (cnt < spaces)
+            {
+                arr[i++] += 1;
+                cnt += 1;
+                if (i == amount_of_words - 1)
+                {
+                    i = 0;
+                }
+            }
+            return arr;
+        }
 
-    		string[] splitted = Input.Trim().Replace('\n', ' ').Split();
-    		var result = new StringBuilder();
-    		var current = new StringBuilder();
+        public override void Review()
+		{
+			if(Input  == null)
+			{
+				return;
+			}
+			int symbols = 0;
+			string[] splitted = Input.Split(' ');
+			string[] result = new string[0];
+			string[] current = new string[0];
+			
 
-    		for(int i = 0; i < splitted.Length; i++)
-    		{
+			for(int i = 0; i< splitted.Length; ++i)
+			{
+				if(symbols + current.Length + splitted[i].Length <= 50)
+				{
+					Array.Resize(ref current, current.Length + 1);
+					current[^1] = splitted[i];
+					symbols += splitted[i].Length;
+				}
+				else
+				{
+					int[] fillers = GetSpaces(current.Length, symbols);
+					string wrd = current[0];
+					for(int j = 0; j < fillers.Length; ++j)
+					{
+						wrd += new string(' ', fillers[j]) + current[j + 1];
+					}
+					Array.Resize(ref result, result.Length + 1);
+					result[^1] = wrd;
+					i--;
+					current = new string[0];
+					symbols = 0;
+				}
+			}
+			if(current.Length > 0)
+			{
+				int[] fillers = GetSpaces(current.Length, symbols);
+				string wrd = current[0];
 
-                if (splitted[i].Length == 0)
-    			{
-    				continue;
-    			}
-                var word = splitted[i];
 
-    			int n = current.Length;
-    			if ((n + word.Length + 1 <= 50) || (n == 0 && word.Length <= 50))
-    			{
-    				if (n > 0)
-    				{
-    					current.Append(' ');
-    				}
-    				current.Append(word);
-    			}
+				for(int j = 0; j < fillers.Length; j++)
+				{
+					wrd += new string(' ', fillers[j]) + current[j + 1];
+				}
 
-    			if( (n+ word.Length + 1 > 50) || (i == splitted.Length - 1))
-    			{
-    				if(result.Length > 0)
-    				{
-    					result.Append('\n');
-    				}
-    				var cursplit = current.ToString().Split();
-    				int spaces = cursplit.Length - 1;
-    				int remain = 50 - current.Length;
-    				if(remain < 0)
-    				{
-    					remain = 0;
-    				}
-    				int minsp, additionalspaces;
-    				if(spaces <= 0)
-    				{
-    					
-                        minsp = remain;
-    					additionalspaces = 0;
-    				}
-    				else
-    				{
-    					
-                        minsp = 1 + remain / spaces;
-                        additionalspaces = remain % spaces;
-                    }
+				Array.Resize(ref result, result.Length + 1);
+				result[^1] = wrd;
+			}
 
-    				for(int j = 0; j < spaces; j++)
-    				{
-    					result.Append(cursplit[j]);
-    					int curspaces = minsp;
-    					if(j < additionalspaces)
-    					{
-    						curspaces++;
-    					}
-    					result.Append(new string(' ', curspaces));
-    				}
-    				result.Append(cursplit[^1]);
-    				if(spaces == 0)
-    				{
-                           result.Append(new string(' ', remain));
-                    }
+			_output = result;
+			
+		}
 
-    				current.Clear();
-    				current.Append(word);
+		public override string ToString()
+		{
+			if (_output == null || _output.Length == 0)
+			{
+				return "";
+			}
+ 
+			return String.Join(Environment.NewLine, _output);
+		   }
 
-    				if (n + 1+ word.Length > 50 && i == splitted.Length - 1)
-    				{
-    					result.Append("\n" + current);
-    				}
+	   }
 
-    			}
-    		}
-    		_output = result.ToString().Split('\n');
-    	}
-
-           public override string ToString()
-           {
-               if(_output == null || _output.Length == 0) {
-                return "";
-               }
-    		   return String.Join(Environment.NewLine, _output);
-           }
-
-       }
-
-    
+	
 }
