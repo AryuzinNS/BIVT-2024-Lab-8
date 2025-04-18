@@ -12,7 +12,16 @@ namespace Lab_8
 	public class Purple_2: Purple
 	{
 		private string[] _output;
-		public string[] Output => _output;
+		public string[] Output
+		{
+			get
+			{
+                if (_output == null) return null;
+                string[] newarr = new string[_output.Length];
+                Array.Copy(_output, newarr, _output.Length);
+                return newarr;
+            }
+		}
 
 		public Purple_2(string input): base(input){}
 
